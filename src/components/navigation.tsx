@@ -23,18 +23,6 @@ export function Navigation() {
             Arquitectura.
           </span>
         </div>
-
-        <div className="md:flex items-center gap-8 text-sm font-bold tracking-widest uppercase text-zinc-400">
-          <a href="#hero" className="hover:text-white transition-colors">
-            Inicio
-          </a>
-          <a href="#differences" className="hover:text-white transition-colors">
-            Diferencias
-          </a>
-          <a href="#cpu-builder" className="hover:text-white transition-colors">
-            Laboratorio
-          </a>
-        </div>
       </nav>
     </header>
   );

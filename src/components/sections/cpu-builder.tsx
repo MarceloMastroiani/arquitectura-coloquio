@@ -6,10 +6,14 @@ import {
   useDroppable,
   DragEndEvent,
   DragStartEvent,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
   useSensor,
   useSensors,
+  useDndContext,
   defaultDropAnimationSideEffects,
+  closestCorners,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import {
@@ -115,6 +119,7 @@ function DraggableItem({ component, placed }: DraggableItemProps) {
 
   const style = {
     transform: CSS.Translate.toString(transform),
+    touchAction: placed ? "auto" : "none",
   };
 
   return (
@@ -175,25 +180,35 @@ function DropSlot({
   isBus,
 }: DropSlotProps) {
   const { isOver, setNodeRef } = useDroppable({ id });
+  const { active } = useDndContext();
   const component = CPU_PARTS.find((c) => c.id === id);
+  const isCorrectTarget = active?.id === id;
 
   return (
     <div
       ref={setNodeRef}
       onClick={isOccupied ? onClick : undefined}
-      className={`relative flex flex-col items-center justify-center transition-all duration-500 rounded-3xl border-2 ${
+      className={`relative flex flex-col items-center justify-center transition-all duration-500 rounded-3xl border-2 p-2 md:p-0 ${
         isOver
           ? "border-white/30 bg-white/5 scale-105 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
           : isOccupied
             ? `bg-black/40 cursor-pointer ${isActive ? "scale-[1.02] shadow-[0_0_30px_rgba(255,255,255,0.05)] border-solid" : "hover:border-white/20 hover:scale-[1.01] border-solid"}`
-            : "border-dashed border-white/5 bg-[#050505]"
+            : isCorrectTarget
+              ? "border-white/20 bg-white/5 animate-pulse scale-105"
+              : "border-dashed border-white/5 bg-[#050505]"
       } ${isBus ? "h-24 md:h-28 w-full" : "aspect-square w-full"}`}
       style={{
-        borderColor: isOccupied ? `${component?.color || "#333"}40` : undefined,
+        borderColor: isOccupied
+          ? `${component?.color || "#333"}40`
+          : isCorrectTarget
+            ? `${component?.color || "#fff"}60`
+            : undefined,
         boxShadow:
           isOccupied && isActive
             ? `0 0 40px ${component?.color || "#333"}10`
-            : "none",
+            : isCorrectTarget
+              ? `0 0 30px ${component?.color || "#fff"}10`
+              : "none",
       }}
     >
       {!isOccupied ? (
@@ -264,7 +279,15 @@ export function CPUBuilder() {
   const [detail, setDetail] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(MouseSensor, {
+      // For mouse: 10px movement starts drag
+      activationConstraint: { distance: 10 },
+    }),
+    useSensor(TouchSensor, {
+      // For touch: 250ms hold starts drag, allowing scrolling if they swipe quickly
+      activationConstraint: { delay: 250, tolerance: 5 },
+    }),
+    useSensor(KeyboardSensor),
   );
 
   const allPlaced = useMemo(
@@ -301,7 +324,7 @@ export function CPUBuilder() {
   return (
     <section
       id="cpu-builder"
-      className="py-24 md:py-32 px-6 bg-black border-t border-white/5 relative overflow-hidden"
+      className="py-20 md:py-32 px-6 bg-black border-t border-white/5 relative overflow-clip"
     >
       <style>{`
         @keyframes packet {
@@ -359,21 +382,23 @@ export function CPUBuilder() {
 
         <DndContext
           sensors={sensors}
+          collisionDetection={closestCorners}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          autoScroll={false}
         >
           <div className="grid xl:grid-cols-[1fr_280px] gap-12 items-start">
             {/* Visual Board */}
             <div className="space-y-8">
-              <div className="flex items-center justify-between px-2">
-                <div className="flex items-center gap-6">
+              <div className="flex items-center justify-between md:px-2">
+                <div className="flex items-center gap-4 sm:gap-6">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-[10px] font-black text-zinc-500 tracking-widest uppercase">
                       System Online
                     </span>
                   </div>
-                  <div className="h-4 w-px bg-white/10" />
+                  <div className="hidden md:block h-4 w-px bg-white/10" />
                   <span
                     className={`text-[10px] font-black uppercase tracking-widest ${allPlaced ? "text-emerald-400" : "text-amber-500"}`}
                   >
@@ -397,7 +422,7 @@ export function CPUBuilder() {
               </div>
 
               {/* The DIE (Microchip) */}
-              <div className="relative p-10 md:p-16 rounded-[3rem] bg-[#030303] border border-white/10 overflow-hidden shadow-2xl">
+              <div className="relative p-6 md:p-16 rounded-4xl md:rounded-[3.5rem] bg-[#030303] border border-white/10 overflow-hidden shadow-2xl">
                 {/* Tech Background */}
                 <div className="absolute inset-0 opacity-20 pointer-events-none">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#3b82f610,transparent_70%)]" />
@@ -413,7 +438,7 @@ export function CPUBuilder() {
 
                 <div className="relative z-10 space-y-8 max-w-[600px] mx-auto">
                   {/* Internal Grid */}
-                  <div className="grid grid-cols-3 gap-6 md:gap-8">
+                  <div className="grid grid-cols-3 gap-3 md:gap-8">
                     <DropSlot
                       id="alu"
                       label="ALU"
@@ -450,7 +475,7 @@ export function CPUBuilder() {
                   />
                 </div>
 
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-mono text-zinc-800 tracking-[1em] uppercase font-black select-none pointer-events-none">
+                <div className="absolute hidden md:block bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-mono text-zinc-800 tracking-[1em] uppercase font-black select-none pointer-events-none">
                   Placa de Silicio
                 </div>
               </div>
@@ -541,7 +566,7 @@ export function CPUBuilder() {
 
             {/* Sidebar Tray */}
             <div className="xl:sticky xl:top-32 space-y-6 xl:order-0 order-last">
-              <div className="bg-[#050505] p-6 rounded-3xl border border-white/5">
+              <div className="bg-[#050505] p-4 rounded-3xl border border-white/5">
                 <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 text-center">
                   Bandeja de Partes
                 </h3>
@@ -585,7 +610,7 @@ export function CPUBuilder() {
           >
             {activeComponent ? (
               <div
-                className="p-6 rounded-2xl bg-[#111] border-2 shadow-[0_20px_50px_rgba(0,0,0,0.8)] scale-110 flex items-center gap-5 transition-transform"
+                className="p-6 rounded-2xl bg-[#111] border-2 shadow-[0_20px_50px_rgba(0,0,0,0.8)] scale-110 flex items-center gap-5 pointer-events-none"
                 style={{
                   borderColor: activeComponent.color,
                   boxShadow: `0 0 40px ${activeComponent.color}40`,

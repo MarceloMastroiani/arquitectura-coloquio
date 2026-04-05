@@ -73,11 +73,11 @@ export function DifferencesSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 rounded-full bg-[#0a0a0a] border border-white/10 md:flex items-center justify-center text-xs font-black text-[#a1a1aa] shadow-xl">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 rounded-full bg-[#0a0a0a] border border-white/10 flex items-center justify-center text-xs font-black text-[#a1a1aa] shadow-xl">
             VS
           </div>
 
-          <div className="diff-card p-12 rounded-4xl bg-[#0a0a0a] border border-white/5 hover:border-[#3b82f6]/30 transition-colors group relative overflow-hidden">
+          <div className="diff-card p-6 md:p-12 rounded-4xl bg-[#0a0a0a] border border-white/5 hover:border-[#3b82f6]/30 transition-colors group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#3b82f6]/5 rounded-bl-[100px] transition-colors group-hover:bg-[#3b82f6]/10" />
 
             <div className="mb-10 text-[#3b82f6]">
@@ -103,7 +103,7 @@ export function DifferencesSection() {
             </p>
           </div>
 
-          <div className="diff-card p-12 rounded-4xl bg-[#0a0a0a] border border-white/5 hover:border-[#eab308]/30 transition-colors group relative overflow-hidden">
+          <div className="diff-card p-6 md:p-12 rounded-4xl bg-[#0a0a0a] border border-white/5 hover:border-[#eab308]/30 transition-colors group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#eab308]/5 rounded-bl-[100px] transition-colors group-hover:bg-[#eab308]/10" />
 
             <div className="mb-10 text-[#eab308]">

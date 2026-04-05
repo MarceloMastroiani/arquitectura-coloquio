@@ -1,9 +1,9 @@
-import { ThemeProvider } from '@/components/theme-provider'
-import { Navigation } from '@/components/navigation'
-import { HeroSection } from '@/components/sections/hero-section'
-import { DifferencesSection } from '@/components/sections/differences-section'
-import { CPUBuilder } from '@/components/sections/cpu-builder'
-import { ExecutionVisualizer } from '@/components/sections/execution-visualizer'
+import { ThemeProvider } from "@/components/theme-provider";
+import { Navigation } from "@/components/navigation";
+import { HeroSection } from "@/components/sections/hero-section";
+import { DifferencesSection } from "@/components/sections/differences-section";
+import { CPUBuilder } from "@/components/sections/cpu-builder";
+import { ExecutionVisualizer } from "@/components/sections/execution-visualizer";
 
 export default function App() {
   return (
@@ -16,5 +16,5 @@ export default function App() {
         <ExecutionVisualizer />
       </main>
     </ThemeProvider>
-  )
+  );
 }

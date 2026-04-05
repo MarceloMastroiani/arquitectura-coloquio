@@ -35,7 +35,7 @@ export function HeroSection() {
     <section
       id="hero"
       ref={containerRef}
-      className="min-h-screen relative flex items-center pt-20 overflow-hidden bg-[#000000] text-white"
+      className="min-h-screen relative flex items-center pt-20 pb-20 overflow-hidden bg-[#000000] text-white"
     >
       {/* Background elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vw] font-black text-white/8 select-none pointer-events-none leading-none tracking-tighter mix-blend-screen">
@@ -43,7 +43,7 @@ export function HeroSection() {
         <span className="vs-risc inline-block">S</span>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 relative z-10 gap-20 pt-10 lg:gap-0">
         {/* CISC Side */}
         <div className="hero-elem flex flex-col items-start justify-center lg:pr-12">
           <p className="text-[#3b82f6] text-xs font-black tracking-[0.2em] mb-4 uppercase">
@@ -79,7 +79,7 @@ export function HeroSection() {
           <h1 className="text-8xl lg:text-[10rem] font-black tracking-tighter mb-4 w-full leading-none text-left lg:text-right">
             RISC
           </h1>
-          <p className="text-zinc-400 text-lg md:text-xl font-medium mb-8 max-w-md leading-relaxed ml-auto text-left lg:text-right">
+          <p className="text-zinc-400 text-lg md:text-xl font-medium mb-8 max-w-md leading-relaxed  lg:text-right">
             Hace menos por instrucción, pero las ejecuta tan rápido que igual
             gana. Velocidad sobre complejidad.
           </p>

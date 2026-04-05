@@ -41,7 +41,7 @@ export function ExecutionVisualizer() {
   return (
     <section
       id="visualizer"
-      className="py-24 px-6 bg-black text-white relative"
+      className="pb-24 pt-12 px-6 bg-black text-white relative"
     >
       <div className="max-w-[1200px] mx-auto border-t border-white/5 pt-20">
         {/* RISC Part */}
